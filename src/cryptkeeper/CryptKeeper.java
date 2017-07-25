@@ -169,12 +169,16 @@ public class CryptKeeper {
         }
     }
 
-    private String extractFileName (String filePath) 
+    /**
+     * This method takes in a file path and returns the specific file name without an extension.
+     * @param filePath the file path in which contains the desired file name.
+     * @return a String of the filename without an extension.
+     */
+    private String extractFileName (String filePath)
     {
-
-        
-
-        return "";
+        String list[] = filePath.split("\\\\"); // form an array containing all info between backslashes
+        String filename = list[list.length - 1]; // take the last item in the array
+        return filename.substring(0, filename.lastIndexOf('.')); // return the file without extension
     }
 
 }
