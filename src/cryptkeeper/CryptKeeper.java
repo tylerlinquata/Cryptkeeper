@@ -156,6 +156,7 @@ public class CryptKeeper {
         }
         return salt;
     }
+
     private void deleteFile(String filePath)
     {
         try
@@ -168,4 +169,13 @@ public class CryptKeeper {
         }
     }
 
+    private String extractFileName (String filePath) 
+    {
+
+        
+
+        return "";
+    }
+
 }
+
