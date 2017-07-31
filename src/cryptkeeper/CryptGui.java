@@ -1,47 +1,63 @@
 package cryptkeeper;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.*;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import javax.swing.JLabel;
-import java.awt.Color;
-import java.awt.Dimension;
-import javax.swing.JButton;
-import javax.swing.UIManager;
-import javax.swing.JTextField;
-import java.awt.ComponentOrientation;
-import javax.swing.SwingConstants;
-import javax.swing.JTextArea;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by u1068832 on 7/20/2017.
  */
 public class CryptGui extends JFrame {
 
+    //pnl
     private JPanel contentPane;
+    private JPanel panelMenuBar;
+    private JPanel panelEncrypt;
+    private JPanel panelStatus;
+    private JPanel panelSelectFile;
+    private JPanel panelKey;
+    //txt field
     private JTextField txtEnterFilepathHere;
-    private JTextField txtEnterKeyHere;
+    private JPasswordField txtEnterKeyHere;
+    //btn
+    private JButton btnBrowse;
+    private JButton btnEncrypt;
+    private JButton btnDecrypt;
+    private JButton btnAbout;
+    //private JButton btnGenerate;
     private JButton btnEncrypt_1;
     private JButton btnDecrypt_1;
+    //lbls
+    private JLabel lblLogoHere;
+    private JLabel lblEntergenerateKey;
     private JLabel lblSelectFileTo;
+    private JLabel lblStatus;
+    //file chooser
+    private JFileChooser chooser;
+    private String chooserTitle = "Select a file";
+
 
     /**
      * Launch the application.
      */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    CryptKeepergui frame = new CryptKeepergui();
+    public static void main(String[] args)
+    {
+        EventQueue.invokeLater(new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
+                    CryptGui frame = new CryptGui();
                     frame.setVisible(true);
-                } catch (Exception e) {
+                } catch (Exception e)
+                {
                     e.printStackTrace();
                 }
             }
@@ -51,48 +67,67 @@ public class CryptGui extends JFrame {
     /**
      * Create the frame.
      */
-    public CryptKeepergui() {
+    public CryptGui()
+    {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 450, 300);
+        setTitle("CryptKeeper File Encryption");
+        Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("icon.png"));
+        setIconImage(image);
+
+        //build gui
+        initPnl();
+        initLbl();
+        initTxtField();
+        initBtn();
+    }
+
+    private void initPnl()
+    {
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JPanel panelMenuBar = new JPanel();
+        panelMenuBar = new JPanel();
         panelMenuBar.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
         panelMenuBar.setBounds(0, 0, 450, 50);
         contentPane.add(panelMenuBar);
 
-        JPanel panelSelectFile = new JPanel();
+        panelSelectFile = new JPanel();
         panelSelectFile.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
         panelSelectFile.setBounds(0, 50, 450, 50);
         contentPane.add(panelSelectFile);
 
-        JPanel panelStatus = new JPanel();
+        panelStatus = new JPanel();
         panelStatus.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
         panelStatus.setPreferredSize(new Dimension(450, 100));
         panelStatus.setBounds(0, 225, 450, 75);
         contentPane.add(panelStatus);
         panelStatus.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-        JPanel panelEncrypt = new JPanel();
+        panelEncrypt = new JPanel();
         panelEncrypt.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
         panelEncrypt.setPreferredSize(new Dimension(450, 100));
         panelEncrypt.setBounds(0, 150, 450, 75);
         contentPane.add(panelEncrypt);
         panelEncrypt.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        panelEncrypt.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-        JPanel panelKey = new JPanel();
+        panelKey = new JPanel();
         panelKey.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
         panelKey.setBounds(0, 100, 450, 50);
         contentPane.add(panelKey);
+    }
 
-        JLabel lblLogoHere = new JLabel("LOGO HERE");
+    private void initLbl()
+    {
+        lblLogoHere = new JLabel();
         lblLogoHere.setHorizontalAlignment(SwingConstants.LEFT);
-        lblLogoHere.setPreferredSize(new Dimension(50, 25));
+        lblLogoHere.setPreferredSize(new Dimension(120, 40));
         lblLogoHere.setOpaque(true);
-        lblLogoHere.setBackground(Color.WHITE);
+        lblLogoHere.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
+        lblLogoHere.setIcon(new ImageIcon(this.getClass().getResource("c-logo.png")));
         panelMenuBar.add(lblLogoHere);
 
         lblSelectFileTo = new JLabel("Select File to Encrypt");
@@ -101,53 +136,70 @@ public class CryptGui extends JFrame {
         lblSelectFileTo.setPreferredSize(new Dimension(150, 50));
         panelSelectFile.add(lblSelectFileTo);
 
-        txtEnterFilepathHere = new JTextField();
-        txtEnterFilepathHere.setPreferredSize(new Dimension(100, 25));
-        txtEnterFilepathHere.setText("Enter Filepath Here");
-        panelSelectFile.add(txtEnterFilepathHere);
-        txtEnterFilepathHere.setColumns(15);
-
-
-        JLabel lblEntergenerateKey = new JLabel("Enter/Generate Key");
+        lblEntergenerateKey = new JLabel("Enter/Generate Key");
         lblEntergenerateKey.setPreferredSize(new Dimension(150, 50));
         panelKey.add(lblEntergenerateKey);
 
-        txtEnterKeyHere = new JTextField();
+        lblStatus = new JLabel();
+        panelStatus.add(lblStatus);
+    }
+
+    private void initTxtField()
+    {
+        txtEnterFilepathHere = new JTextField();
+        txtEnterFilepathHere.setPreferredSize(new Dimension(100, 25));
+        panelSelectFile.add(txtEnterFilepathHere);
+        txtEnterFilepathHere.setColumns(15);
+
+        txtEnterKeyHere = new JPasswordField();
         txtEnterKeyHere.setPreferredSize(new Dimension(100, 25));
-        txtEnterKeyHere.setText("Enter key here");
         panelKey.add(txtEnterKeyHere);
         txtEnterKeyHere.setColumns(15);
+    }
 
-        JLabel lblStatus = new JLabel("Success/Failure");
-        panelStatus.add(lblStatus);
-
-        JButton btnBrowse = new JButton("Browse");
+    private void initBtn()
+    {
+        //browse
+        btnBrowse = new JButton("Browse");
         panelSelectFile.add(btnBrowse);
-        btnBrowse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Desktop.getDesktop().open(new File("c:\\"));
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+        btnBrowse.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                chooser = new JFileChooser();
+                chooser.setCurrentDirectory(new java.io.File("."));
+                chooser.setDialogTitle(chooserTitle);
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+                if (chooser.showOpenDialog(contentPane) == JFileChooser.APPROVE_OPTION)
+                {
+                    txtEnterFilepathHere.setText(chooser.getSelectedFile().toString()); //update txtbox with selection
+                }
+                else
+                {
+                    System.out.println("No Selection ");
                 }
             }
         });
 
-        JButton btnEncrypt = new JButton("Encrypt");
+        btnEncrypt = new JButton("Encrypt");
         btnEncrypt.setBackground(UIManager.getColor("Button.darkShadow"));
         btnEncrypt.setPreferredSize(new Dimension(100, 25));
         panelMenuBar.add(btnEncrypt);
-        btnEncrypt.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        btnEncrypt.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 panelEncrypt.remove(btnDecrypt_1);
                 panelEncrypt.repaint();
                 panelEncrypt.add(btnEncrypt_1);
                 lblSelectFileTo.setText("Select File to Encrypt");
                 panelEncrypt.revalidate();
+                clearInput();
             }
         });
 
-        JButton btnDecrypt = new JButton("Decrypt");
+        btnDecrypt = new JButton("Decrypt");
         btnDecrypt.setPreferredSize(new Dimension(100, 25));
         panelMenuBar.add(btnDecrypt);
         btnDecrypt.addActionListener(new ActionListener() {
@@ -157,10 +209,11 @@ public class CryptGui extends JFrame {
                 panelEncrypt.add(btnDecrypt_1);
                 lblSelectFileTo.setText("Select File to Decrypt");
                 panelEncrypt.revalidate();
+                clearInput();
             }
         });
 
-        JButton btnAbout = new JButton("About");
+        btnAbout = new JButton("About");
         btnAbout.setPreferredSize(new Dimension(100, 25));
         panelMenuBar.add(btnAbout);
         btnAbout.addActionListener(new ActionListener() {
@@ -169,20 +222,22 @@ public class CryptGui extends JFrame {
             }
         });
 
-        JButton btnGenerate = new JButton("Generate");
-        panelKey.add(btnGenerate);
-        btnGenerate.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
+//        btnGenerate = new JButton("Generate");
+//        panelKey.add(btnGenerate);
+//        btnGenerate.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//
+//            }
+//        });
 
         btnEncrypt_1 = new JButton("Encrypt");
         btnEncrypt_1.setPreferredSize(new Dimension(100, 50));
         panelEncrypt.add(btnEncrypt_1);
-        btnEncrypt_1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
+        btnEncrypt_1.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+               cryptKeep(true);
             }
         });
 
@@ -190,10 +245,48 @@ public class CryptGui extends JFrame {
         btnDecrypt_1.setPreferredSize(new Dimension(100,50));
         btnDecrypt_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                cryptKeep(false); //decrypt
             }
         });
-
-
     }
+
+    private void clearInput()
+    {
+        txtEnterFilepathHere.setText("");
+        txtEnterKeyHere.setText("");
+    }
+
+    private void cryptKeep(boolean encrypt)
+    {
+        char[] pw = txtEnterKeyHere.getPassword();
+        String path = txtEnterFilepathHere.getText();
+        if(path != "" && pw.length > 0)
+        {
+            CryptKeeper ck = new CryptKeeper();
+            String status = "";
+            try {
+                //set the status message text with outcome
+                if(encrypt)
+                {
+                    status = ck.Encrypt(pw, path, true);
+                }
+                else
+                {
+                    //decrypt
+                    status = ck.Decrypt(pw, path);
+                }
+            }
+            catch(Exception ex)
+            {
+                System.out.println(path);
+                System.out.println(ex.getMessage());
+                ex.printStackTrace();
+            }
+            finally
+            {
+                lblStatus.setText(status);
+            }
+        }
+    }
+
 }

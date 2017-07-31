@@ -25,7 +25,7 @@ public class CryptKeeper {
     /*TODO: write method to extract filename from filepath. should be able to locate the last index of \ and create
     *      substring containing filename. We will also need to exclude the filetype, as it will change
     */
-    public String Encrypt(String password, String filePath, Boolean keepFile) throws Exception
+    public String Encrypt(char[] password, String filePath, Boolean keepFile) throws Exception
     {
         // file to be encrypted
         File target = new File(filePath);
@@ -36,8 +36,11 @@ public class CryptKeeper {
         String checksum = CryptPersist.getFileChecksum(md5Digest, target);
         System.out.printf("Checksum = %s\n", checksum);
 
+        //get new name
+        String newName = extractFileName(filePath);
+        String nPath = filePath.substring(0, filePath.lastIndexOf(File.separator) + 1);
         // encrypted file
-        FileOutputStream outFile = new FileOutputStream("C:\\crypt\\encryptedfile.des");
+        FileOutputStream outFile = new FileOutputStream(nPath + newName + ".des");
 
         // password, iv and salt should be transferred to the other end
         // in a secure manner
@@ -50,7 +53,7 @@ public class CryptKeeper {
 
         SecretKeyFactory factory = SecretKeyFactory
                 .getInstance("PBKDF2WithHmacSHA1");
-        KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, 65536,
+        KeySpec keySpec = new PBEKeySpec(password, salt, 65536,
                 256);
         SecretKey secretKey = factory.generateSecret(keySpec);
         SecretKey secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
@@ -93,7 +96,7 @@ public class CryptKeeper {
         return "Success - file encrypted!";
     }
 
-    public String Decrypt(String password, String filePath) throws Exception
+    public String Decrypt(char[] password, String filePath) throws Exception
     {
         // reading the salt
         // user should have secure mechanism to transfer the
@@ -111,7 +114,7 @@ public class CryptKeeper {
 
         SecretKeyFactory factory = SecretKeyFactory
                 .getInstance("PBKDF2WithHmacSHA1");
-        KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, 65536,
+        KeySpec keySpec = new PBEKeySpec(password, salt, 65536,
                 256);
         SecretKey tmp = factory.generateSecret(keySpec);
         SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
@@ -119,8 +122,13 @@ public class CryptKeeper {
         // file decryption
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(iv));
-        FileInputStream fis = new FileInputStream(filePath);
-        FileOutputStream fos = new FileOutputStream("C:\\crypt\\plainfile_decrypted.txt");
+        File target = new File(filePath);
+        FileInputStream fis = new FileInputStream(target);
+
+        String newName = extractFileName(filePath);
+        String nPath = filePath.substring(0, filePath.lastIndexOf(File.separator) + 1);
+
+        FileOutputStream fos = new FileOutputStream(nPath + newName + ".txt");
         byte[] in = new byte[64];
         int read;
         while ((read = fis.read(in)) != -1) {
@@ -136,7 +144,7 @@ public class CryptKeeper {
         fos.flush();
         fos.close();
 
-        return "File Decrypted.";
+        return "Success! File Decrypted.";
     }
 
     private byte[] createSalt()
