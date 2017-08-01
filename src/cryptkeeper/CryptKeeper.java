@@ -23,9 +23,6 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class CryptKeeper {
 
-    /*TODO: write method to extract filename from filepath. should be able to locate the last index of \ and create
-    *      substring containing filename. We will also need to exclude the filetype, as it will change
-    */
     public String Encrypt(char[] password, String filePath, Boolean keepFile) throws Exception
     {
         // file to be encrypted
