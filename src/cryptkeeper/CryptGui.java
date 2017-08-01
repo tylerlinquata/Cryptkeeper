@@ -1,5 +1,7 @@
 package cryptkeeper;
 
+import org.omg.CosNaming.NamingContextExtPackage.InvalidAddress;
+
 import java.awt.*;
 
 import javax.swing.*;
@@ -260,8 +262,9 @@ public class CryptGui extends JFrame {
     {
         char[] pw = txtEnterKeyHere.getPassword();
         String path = txtEnterFilepathHere.getText();
-        if(path != "" && pw.length > 0)
+        if(isFile(path) && isPassword(pw))
         {
+            lblStatus.setText(""); // resets lblStatus if validation above
             CryptKeeper ck = new CryptKeeper();
             String status = "";
             try {
@@ -287,6 +290,35 @@ public class CryptGui extends JFrame {
                 lblStatus.setText(status);
             }
         }
+    }
+
+    /**
+     * Checks to find out if the path (String) that is passed by the gui is actually a file.
+     * @param path that is received via navigation from a file explorer or the user entering it manually
+     * @return true if the path is to a file
+     */
+    private boolean isFile(String path) {
+        File myFile  = new File(path);
+        if (myFile.isFile()) {
+            return true;
+        } else {
+            lblStatus.setText("Please enter a valid file");
+            return false;
+        }
+    }
+
+    /**
+     * validates if a character array is a password by count of characters (0 is no password) alerts user if that's the
+     * case
+     * @param pw character array that the user has in the password field
+     * @return true is there is a character in the field
+     */
+    private  boolean isPassword(char[] pw) {
+        if (pw.length == 0) {
+            lblStatus.setText("Please enter a password");
+            return false;
+        }
+        return true;
     }
 
 }
