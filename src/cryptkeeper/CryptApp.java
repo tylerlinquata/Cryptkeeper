@@ -13,8 +13,8 @@ public class CryptApp {
 
         try
         {
-            msg = crypt.Encrypt("myPassword", "C:\\crypt\\target.txt", true); //**update filepath to test
-            System.out.println(msg);
+            //msg = crypt.Encrypt("myPassword", "C:\\crypt\\target.txt", true); //**update filepath to test
+            //System.out.println(msg);
         }
         catch(Exception ex)
         {
@@ -23,8 +23,8 @@ public class CryptApp {
 
         try
         {
-            msg = crypt.Decrypt("myPassword", "C:\\crypt\\encryptedfile.des"); //**update filepath to test
-            System.out.println(msg);
+            //msg = crypt.Decrypt("myPassword", "C:\\crypt\\encryptedfile.des"); //**update filepath to test
+            //System.out.println(msg);
         }
         catch(Exception ex)
         {
