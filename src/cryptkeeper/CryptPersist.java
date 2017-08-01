@@ -1,14 +1,78 @@
 package cryptkeeper;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.MessageDigest;
+import java.util.*;
 
 /**
  * Created by u1068832 on 7/20/2017.
  */
-public class CryptPersist {
+public class CryptPersist implements Serializable {
+
+    private byte[] salt;
+    private byte[] iv;
+    private String md5;
+
+
+    public CryptPersist(byte[] salt, byte[] iv, String md5)
+    {
+        this.salt = salt;
+        this.iv = iv;
+        this.md5 = md5;
+    }
+
+    public void serialize(CryptPersist record) throws Exception
+    {
+        File myFile  = new File("data");
+        List<CryptPersist> cList = new ArrayList<>();
+        if(!myFile.isFile())
+        {
+            //add record
+            cList.add(record);
+            //create new file
+            ObjectOutputStream os1 = new ObjectOutputStream(new FileOutputStream("data"));
+            os1.writeObject(cList);
+            os1.close();
+        }
+        else
+        {
+            //get current objects, add to list then write
+            cList = deserialize();
+            cList.add(record);
+            //append to file
+            ObjectOutputStream os2 = new ObjectOutputStream(new FileOutputStream("data", true)) {
+                protected void writeStreamHeader() throws IOException {
+                    reset();
+                }
+            };
+            os2.writeObject(cList);
+            os2.close();
+        }
+
+    }
+
+    public List<CryptPersist> deserialize() throws Exception
+    {
+        List<CryptPersist> cpData = new ArrayList<>();
+
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("data")))
+        {
+        // Read the next object from the stream. If there is none, the
+        // EOFException will be thrown.
+        // This call might also throw a ClassNotFoundException, which can be passed
+        // up or handled here.
+            while (true)
+            {
+                cpData = (List<CryptPersist>) in.readObject(); //add the persistence record
+            }
+
+        }
+        catch (Exception e)
+        {
+            // If there are no more objects to read, return what we have.
+            return cpData;
+        }
+    }
 
     public static String getFileChecksum(MessageDigest digest, File file) throws IOException
     {
@@ -40,5 +104,11 @@ public class CryptPersist {
 
         //return complete hash
         return sb.toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format("salt: %s iv: %s md5: %s", salt.toString(), iv.toString(), md5.toString());
     }
 }

@@ -10,6 +10,7 @@ import java.security.AlgorithmParameters;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -92,6 +93,15 @@ public class CryptKeeper {
 
         if (!keepFile)
             deleteFile(filePath);
+        //persist data
+        CryptPersist cp = new CryptPersist(salt, iv, checksum);
+        cp.serialize(cp);
+
+        List<CryptPersist>  listPersist = cp.deserialize();
+        for (CryptPersist c : listPersist)
+        {
+            System.out.println(c.toString());
+        }
 
         return "Success - file encrypted!";
     }

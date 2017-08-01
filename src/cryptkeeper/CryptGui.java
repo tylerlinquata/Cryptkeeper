@@ -27,8 +27,8 @@ public class CryptGui extends JFrame {
     private JPasswordField txtEnterKeyHere;
     //btn
     private JButton btnBrowse;
-    private JButton btnEncrypt;
-    private JButton btnDecrypt;
+    private JRadioButton btnEncrypt;
+    private JRadioButton btnDecrypt;
     private JButton btnAbout;
     //private JButton btnGenerate;
     private JButton btnEncrypt_1;
@@ -182,10 +182,13 @@ public class CryptGui extends JFrame {
             }
         });
 
-        btnEncrypt = new JButton("Encrypt");
-        btnEncrypt.setBackground(UIManager.getColor("Button.darkShadow"));
+        ButtonGroup btnGroup = new ButtonGroup();
+
+        btnEncrypt = new JRadioButton("Encrypt");
+        btnEncrypt.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
         btnEncrypt.setPreferredSize(new Dimension(100, 25));
-        panelMenuBar.add(btnEncrypt);
+        btnEncrypt.setSelected(true);
+        btnGroup.add(btnEncrypt);
         btnEncrypt.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -199,9 +202,11 @@ public class CryptGui extends JFrame {
             }
         });
 
-        btnDecrypt = new JButton("Decrypt");
+
+        btnDecrypt = new JRadioButton("Decrypt");
+        btnDecrypt.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
         btnDecrypt.setPreferredSize(new Dimension(100, 25));
-        panelMenuBar.add(btnDecrypt);
+        btnGroup.add(btnDecrypt);
         btnDecrypt.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panelEncrypt.remove(btnEncrypt_1);
@@ -212,13 +217,20 @@ public class CryptGui extends JFrame {
                 clearInput();
             }
         });
+        panelMenuBar.add(btnEncrypt);
+        panelMenuBar.add(btnDecrypt);
+
 
         btnAbout = new JButton("About");
         btnAbout.setPreferredSize(new Dimension(100, 25));
+        btnAbout.setMargin(new Insets(0, 0, 0, 5));
         panelMenuBar.add(btnAbout);
         btnAbout.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                StringBuilder sb = new StringBuilder();
+                sb.append("CryptKeeper is a file encryption and decryption utility.\n");
+                sb.append("Team Loading... 2017");
+                JOptionPane.showMessageDialog(btnAbout, sb.toString(), "CryptKeeper - About", 0, new ImageIcon(getClass().getResource("icon.png")));
             }
         });
 
