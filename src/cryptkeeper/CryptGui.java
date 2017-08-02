@@ -31,6 +31,7 @@ public class CryptGui extends JFrame {
     private JButton btnBrowse;
     private JRadioButton btnEncrypt;
     private JRadioButton btnDecrypt;
+    private JCheckBox keepFile;
     private JButton btnAbout;
     //private JButton btnGenerate;
     private JButton btnEncrypt_1;
@@ -93,11 +94,14 @@ public class CryptGui extends JFrame {
 
         panelMenuBar = new JPanel();
         panelMenuBar.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
+        panelMenuBar.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         panelMenuBar.setBounds(0, 0, 450, 50);
+        panelMenuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.gray));
         contentPane.add(panelMenuBar);
 
         panelSelectFile = new JPanel();
         panelSelectFile.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
+        panelSelectFile.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 0));
         panelSelectFile.setBounds(0, 50, 450, 50);
         contentPane.add(panelSelectFile);
 
@@ -117,6 +121,7 @@ public class CryptGui extends JFrame {
         panelEncrypt.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         panelKey = new JPanel();
+        panelKey.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 0));
         panelKey.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
         panelKey.setBounds(0, 100, 450, 50);
         contentPane.add(panelKey);
@@ -132,14 +137,14 @@ public class CryptGui extends JFrame {
         lblLogoHere.setIcon(new ImageIcon(this.getClass().getResource("c-logo.png")));
         panelMenuBar.add(lblLogoHere);
 
-        lblSelectFileTo = new JLabel("Select File to Encrypt");
+        lblSelectFileTo = new JLabel("Select File to Encrypt:");
         lblSelectFileTo.setOpaque(true);
         lblSelectFileTo.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
-        lblSelectFileTo.setPreferredSize(new Dimension(150, 50));
+        lblSelectFileTo.setPreferredSize(new Dimension(130, 50));
         panelSelectFile.add(lblSelectFileTo);
 
-        lblEntergenerateKey = new JLabel("Enter/Generate Key");
-        lblEntergenerateKey.setPreferredSize(new Dimension(150, 50));
+        lblEntergenerateKey = new JLabel("Enter/Generate Key:");
+        lblEntergenerateKey.setPreferredSize(new Dimension(130, 50));
         panelKey.add(lblEntergenerateKey);
 
         lblStatus = new JLabel();
@@ -188,7 +193,7 @@ public class CryptGui extends JFrame {
 
         btnEncrypt = new JRadioButton("Encrypt");
         btnEncrypt.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
-        btnEncrypt.setPreferredSize(new Dimension(100, 25));
+        btnEncrypt.setPreferredSize(new Dimension(80, 25));
         btnEncrypt.setSelected(true);
         btnGroup.add(btnEncrypt);
         btnEncrypt.addActionListener(new ActionListener()
@@ -197,6 +202,7 @@ public class CryptGui extends JFrame {
             {
                 panelEncrypt.remove(btnDecrypt_1);
                 panelEncrypt.repaint();
+                panelEncrypt.add(keepFile);
                 panelEncrypt.add(btnEncrypt_1);
                 lblSelectFileTo.setText("Select File to Encrypt");
                 panelEncrypt.revalidate();
@@ -207,11 +213,12 @@ public class CryptGui extends JFrame {
 
         btnDecrypt = new JRadioButton("Decrypt");
         btnDecrypt.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
-        btnDecrypt.setPreferredSize(new Dimension(100, 25));
+        btnDecrypt.setPreferredSize(new Dimension(80, 25));
         btnGroup.add(btnDecrypt);
         btnDecrypt.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panelEncrypt.remove(btnEncrypt_1);
+                panelEncrypt.remove(keepFile);
                 panelEncrypt.repaint();
                 panelEncrypt.add(btnDecrypt_1);
                 lblSelectFileTo.setText("Select File to Decrypt");
@@ -231,18 +238,17 @@ public class CryptGui extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("CryptKeeper is a file encryption and decryption utility.\n");
-                sb.append("Team Loading... 2017");
+                sb.append("Team Loading... 2017\n");
+                sb.append("CSIS 1410 - Object Oriented Programming");
                 JOptionPane.showMessageDialog(btnAbout, sb.toString(), "CryptKeeper - About", 0, new ImageIcon(getClass().getResource("icon.png")));
             }
         });
 
-//        btnGenerate = new JButton("Generate");
-//        panelKey.add(btnGenerate);
-//        btnGenerate.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//
-//            }
-//        });
+        //keep file checkbox
+        keepFile = new JCheckBox("Keep File");
+        keepFile.setSelected(true);
+        keepFile.setBackground(UIManager.getColor("Button.disabledToolBarBorderBackground"));
+        panelEncrypt.add(keepFile);
 
         btnEncrypt_1 = new JButton("Encrypt");
         btnEncrypt_1.setPreferredSize(new Dimension(100, 50));
@@ -283,7 +289,7 @@ public class CryptGui extends JFrame {
                 //set the status message text with outcome
                 if(encrypt)
                 {
-                    status = ck.Encrypt(pw, path, true);
+                    status = ck.Encrypt(pw, path, keepFile.isSelected());
                 }
                 else
                 {

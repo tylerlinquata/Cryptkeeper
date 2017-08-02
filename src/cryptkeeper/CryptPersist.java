@@ -5,20 +5,35 @@ import java.security.MessageDigest;
 import java.util.*;
 
 /**
- * Created by u1068832 on 7/20/2017.
+ * @author Team Loading...
+ * Date: 7/23/2017
  */
 public class CryptPersist implements Serializable {
 
+    private String name;
+    private String fileType;
     private byte[] salt;
     private byte[] iv;
-    private String md5;
+
+    public byte[] getSalt() {
+        return salt;
+    }
+
+    public byte[] getIv() {
+        return iv;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
 
 
-    public CryptPersist(byte[] salt, byte[] iv, String md5)
+    public CryptPersist(String name, String fileType, byte[] salt, byte[] iv)
     {
+        this.name = name;
+        this.fileType = fileType;
         this.salt = salt;
         this.iv = iv;
-        this.md5 = md5;
     }
 
     public void serialize(CryptPersist record) throws Exception
@@ -51,7 +66,7 @@ public class CryptPersist implements Serializable {
 
     }
 
-    public List<CryptPersist> deserialize() throws Exception
+    public static List<CryptPersist> deserialize()
     {
         List<CryptPersist> cpData = new ArrayList<>();
 
@@ -74,41 +89,16 @@ public class CryptPersist implements Serializable {
         }
     }
 
-    public static String getFileChecksum(MessageDigest digest, File file) throws IOException
+    public static CryptPersist findMatch(String fileName)
     {
-        //Get file input stream for reading the file content
-        FileInputStream fis = new FileInputStream(file);
+        List<CryptPersist> cp = deserialize();
 
-        //Create byte array to read data in chunks
-        byte[] byteArray = new byte[1024];
-        int bytesCount = 0;
-
-        //Read file data and update in message digest
-        while ((bytesCount = fis.read(byteArray)) != -1) {
-            digest.update(byteArray, 0, bytesCount);
-        }
-
-        //close the stream; We don't need it now.
-        fis.close();
-
-        //Get the hash's bytes
-        byte[] bytes = digest.digest();
-
-        //This bytes[] has bytes in decimal format;
-        //Convert it to hexadecimal format
-        StringBuilder sb = new StringBuilder();
-        for(int i=0; i< bytes.length ;i++)
+        for (CryptPersist c : cp)
         {
-            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            if(fileName.equals(c.name))
+                return c;
         }
 
-        //return complete hash
-        return sb.toString();
-    }
-
-    @Override
-    public String toString()
-    {
-        return String.format("salt: %s iv: %s md5: %s", salt.toString(), iv.toString(), md5.toString());
+        return null;
     }
 }
